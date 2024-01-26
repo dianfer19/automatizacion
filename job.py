@@ -47,7 +47,7 @@ def leer_bandeja():
 
     with IMAPClient(HOST) as client:
         client.login(USERNAME, PASSWORD)
-        client.select_folder('INBOX', readonly=True)
+        client.select_folder('INBOX', readonly=False)
 
         # Buscar correos no leídos
         messages = client.search(['UNSEEN'])
@@ -63,7 +63,7 @@ def leer_bandeja():
                 if part.get_content_type() == 'text/plain':
                     body = part.get_payload(decode=True).decode()
                     print('Cuerpo:', body)
-
+            client.add_flags(msg_id, [b'\\Seen'])
 
 scheduler = BlockingScheduler()
 scheduler.add_job(envio_mail, 'cron', day_of_week='mon-fri', hour=8, minute=55)
